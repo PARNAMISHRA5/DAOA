@@ -1,15 +1,25 @@
 #include<stdio.h>
-void main()
+#include<conio.h>
+
+int main()
 {
-    int den[]={1,4,6};
-    int N=8;
-    int n=sizeof(den)/sizeof(den[0]);
-    int i,j,sn;
-    int k=0;
-    int C[n+1][N+1];
-    for(i=0;i<=n;i++)
+    int n,N,k=0;
+    printf("Enter no. of denominations : ");
+    scanf("%d",&n);
+    int den[n];
+
+    printf("enter the denominations  : ");
+    for(int i =0;i<n;i++)
     {
-        for(j=0;j<=N;j++)
+        scanf("%d",&den[i]);
+    }
+    printf("Enter value N : ");
+    scanf("%d",&N);
+    int C[n+1][N+1];
+
+    for(int i=0;i<=n;i++)
+    {
+        for(int j=0;j<=N;j++)
         {
             if(i==0 || j==0)
             {
@@ -17,53 +27,47 @@ void main()
             }
             else if(i==1)
             {
-                C[i][j]=1+C[i][j-den[i-1]];
+                C[i][j] = (j<den[i-1])?0:(1+C[i][j-den[i-1]]);
             }
             else if(j<den[i-1])
             {
                 C[i][j]=C[i-1][j];
             }
-            else
-            {
-                if(C[i-1][j]<=1+C[i][j-den[i-1]])
-                {
-                    C[i][j]=C[i-1][j];
-                }
-                else
-                {
-                    C[i][j]=1+C[i][j-den[i-1]];
-                }
+            else{
+                C[i][j] = (C[i-1][j] <= 1 + C[i][j-den[i-1]]) ? C[i-1][j] : 1 + C[i][j-den[i-1]];
             }
         }
     }
-    for(i=0;i<=n;i++)
+    for(int i=0;i<=n;i++)
     {
-        for(j=0;j<=N;j++)
+        for(int j=0;j<=N;j++)
         {
-            printf("%d ",C[i][j]);
+            printf("%d ", C[i][j]);
         }
         printf("\n");
     }
-    sn=C[n][N];
-    printf("\nNo of coins: %d\n",sn);
+    int sn=C[n][N];
+    int j=N;
     int sol[sn];
-    for(i=n;i>=0;i--)
+    int i=n;
+    while(i>0 && sn>0)
     {
-        for(j=N;j>=0;j--)
+        if(i==1 || C[i][j] != C[i-1][j])
         {
-            if(C[i][j]==C[i-1][j])
-            {
-                i--;
-            }
-            else
-            {
-                j=j-den[i-1];
-            }
             sol[k++]=den[i-1];
+            sn--;
+            j-=den[i-1];
         }
+        else i--;
     }
-    for(i=0;i<sn;i++)
-    {
-        printf("%d ",sol[i]);
+    // printing the solution array in reverse order
+   printf("Coins used: ");
+    for (i = 0; i < k; i++) {
+        printf("%d ", sol[i]);
     }
+    printf("\n");
+
+    return 0;
+
+
 }
